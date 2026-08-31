@@ -1,2 +1,5 @@
 # Kelompok-5_Kelas-B_Pemrograman_Mobile
-1. Tri Darul Nurul Pratiwi - D121241081 - @tridarulnp.
+Anggota Kelompok: 
+1. Tri Darul Nurul Pratiwi - D121241081 - @tridarulnp
+2. Nadiah Alya Khirani - D121241083 - @nan4dd
+3. Ryandi Putra Angagara - D121241069 - @ryndiptranggara
