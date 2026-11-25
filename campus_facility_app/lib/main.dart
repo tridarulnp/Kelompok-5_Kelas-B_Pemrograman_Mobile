@@ -21,10 +21,299 @@ class CampusFacilityApp extends StatelessWidget {
           surface: Colors.white,
         ),
       ),
-      home: const AdminDashboardScreen(),
+      home: const RoleSelectionScreen(),
+    );
+  }
+} 
+class RoleSelectionScreen extends StatelessWidget {
+  const RoleSelectionScreen({super.key});
+
+  static const Color teal = Color(0xFF0F766E);
+  static const Color blue = Color(0xFF0284C7);
+  static const Color background = Color(0xFFF1F5F9);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(24, 35, 24, 25),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 60,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // LOGO APLIKASI
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF0F766E),
+                            Color(0xFF042F2E),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: teal.withValues(alpha: 0.25),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.fact_check_rounded,
+                        color: Color(0xFF5EEAD4),
+                        size: 48,
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // JUDUL DI TENGAH
+                    const Text(
+                      'Selamat Datang!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 29,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.8,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    const Text(
+                      'Silakan pilih peran Anda untuk melanjutkan.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF64748B),
+                        height: 1.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 42),
+
+                    // KARTU MAHASISWA
+                    _buildRoleCard(
+                      context: context,
+                      icon: Icons.school_rounded,
+                      title: 'Mahasiswa',
+                      tag: 'PELAPOR',
+                      description:
+                          'Buat laporan kerusakan dan pantau '
+                          'status pengaduan fasilitas kampus.',
+                      color: teal,
+                      iconBackground: const Color(0xFFCCFBF1),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Halaman login Mahasiswa akan dibuat selanjutnya.',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // KARTU ADMIN / PETUGAS
+                    _buildRoleCard(
+                      context: context,
+                      icon: Icons.admin_panel_settings_rounded,
+                      title: 'Admin / Petugas',
+                      tag: 'PENGELOLA',
+                      description:
+                          'Kelola laporan, tindak lanjuti kerusakan, '
+                          'dan pantau fasilitas kampus.',
+                      color: blue,
+                      iconBackground: const Color(0xFFE0F2FE),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const AdminDashboardScreen(),
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 45),
+
+                    // FOOTER
+                    const Text(
+                      'LAPOR KAMPUS',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2,
+                        color: Color(0xFF94A3B8),
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    const Text(
+                      'Satu Laporan, Langkah untuk Perubahan.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF94A3B8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // WIDGET KARTU ROLE
+  Widget _buildRoleCard({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String tag,
+    required String description,
+    required Color color,
+    required Color iconBackground,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: color.withValues(alpha: 0.20),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.09),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 62,
+                    height: 62,
+                    decoration: BoxDecoration(
+                      color: iconBackground,
+                      borderRadius: BorderRadius.circular(19),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: color,
+                      size: 34,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 7,
+                    ),
+                    decoration: BoxDecoration(
+                      color: iconBackground,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Text(
+                      tag,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                        color: color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 17),
+
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                description,
+                style: const TextStyle(
+                  fontSize: 13,
+                  height: 1.5,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+
+              const SizedBox(height: 17),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Lanjutkan',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 19,
+                    color: color,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
+
 
 // ==========================================
 // DATA MODELS & CONTRACTS (Firebase Ready)
@@ -611,113 +900,84 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
 
               Column(
+  children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF2DD4BF),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'TOTAL TIKET LAPORAN',
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.1,
-                                  color: Colors.white.withValues(alpha: 0.85),
-                                ),
-                              ),
-                              if (isAllSelected) ...[
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF2DD4BF),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: const Text(
-                                    'SEMUA',
-                                    style: TextStyle(
-                                      fontSize: 9.5,
-                                      fontWeight: FontWeight.w900,
-                                      color: Color(0xFF042F2E),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(
-                                '${_stats?.total ?? 0}',
-                                style: const TextStyle(
-                                  fontSize: 38,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: -1,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'laporan aktif',
-                                style: TextStyle(
-                                  fontSize: 13.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.25),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Penyelesaian',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.75),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              '${_stats?.resolutionRate ?? 0}%',
-                              style: const TextStyle(
-                                fontSize: 16.5,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF5EEAD4),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  Text(
+                    '${_stats?.total ?? 0}',
+                    style: const TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: -1,
+                    ),
                   ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'laporan aktif',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 10,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.25),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                'Penyelesaian',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.75),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${_stats?.resolutionRate ?? 0}%',
+                style: const TextStyle(
+                  fontSize: 16.5,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF5EEAD4),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(height: 18),
                   const SizedBox(height: 18),
                   // Prominent Segmented Progress Bar with Header & Legend
                   Column(
