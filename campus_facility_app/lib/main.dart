@@ -312,7 +312,7 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 }
 
-class StudentRegisterScreen extends StatefulWidget {
+ class StudentRegisterScreen extends StatefulWidget {
   const StudentRegisterScreen({super.key});
 
   @override
@@ -590,12 +590,12 @@ class _StudentRegisterScreenState extends State<StudentRegisterScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Halaman login Mahasiswa akan dibuat selanjutnya.',
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => const StudentLoginScreen(),
+                            
                               ),
-                            ),
                           );
                         },
                         child: const Text(
@@ -2038,6 +2038,236 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class StudentLoginScreen extends StatefulWidget {
+  const StudentLoginScreen({super.key});
+
+  @override
+  State<StudentLoginScreen> createState() =>
+      _StudentLoginScreenState();
+}
+
+class _StudentLoginScreenState extends State<StudentLoginScreen> {
+  static const Color teal = Color(0xFF0F766E);
+  static const Color background = Color(0xFFF1F5F9);
+
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController namaController = TextEditingController();
+  final TextEditingController nimController = TextEditingController();
+
+  @override
+  void dispose() {
+    namaController.dispose();
+    nimController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInput({
+    required String label,
+    required String hint,
+    required IconData icon,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF334155),
+          ),
+        ),
+        const SizedBox(height: 9),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return '$label tidak boleh kosong';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: Icon(icon, color: teal, size: 21),
+            filled: true,
+            fillColor: const Color(0xFFF8FAFC),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 17,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE2E8F0),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE2E8F0),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: teal,
+                width: 1.5,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back_rounded,
+                    color: Color(0xFF0F172A),
+                  ),
+                  padding: EdgeInsets.zero,
+                  alignment: Alignment.centerLeft,
+                ),
+
+                const SizedBox(height: 65),
+
+                Center(
+                  child: Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF0F766E),
+                          Color(0xFF042F2E),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: teal.withValues(alpha: 0.25),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.fact_check_rounded,
+                      color: Color(0xFF5EEAD4),
+                      size: 48,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 55),
+
+                _buildInput(
+                  label: 'Nama Lengkap',
+                  hint: 'Masukkan nama lengkap',
+                  icon: Icons.person_outline_rounded,
+                  controller: namaController,
+                ),
+
+                const SizedBox(height: 22),
+
+                _buildInput(
+                  label: 'Nomor Induk Mahasiswa (NIM)',
+                  hint: 'Masukkan NIM',
+                  icon: Icons.badge_outlined,
+                  controller: nimController,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 32),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Data login berhasil divalidasi.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: teal,
+                      foregroundColor: Colors.white,
+                      elevation: 3,
+                      shadowColor: teal.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: const Text(
+                      'Masuk',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 75),
+
+                const Center(
+                  child: Text(
+                    'LAPOR KAMPUS',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                const Center(
+                  child: Text(
+                    'Satu Laporan, Langkah untuk Perubahan.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
