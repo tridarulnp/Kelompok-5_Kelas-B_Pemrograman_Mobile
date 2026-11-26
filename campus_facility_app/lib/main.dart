@@ -21,10 +21,161 @@ class CampusFacilityApp extends StatelessWidget {
           surface: Colors.white,
         ),
       ),
-      home: const RoleSelectionScreen(),
+      home: const SplashScreen(),
     );
   }
 } 
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  static const Color teal = Color(0xFF009688);
+  static const Color darkTeal = Color(0xFF064E46);
+
+  @override 
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white, 
+      body:SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // LOGO APLIKASI 
+                      Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF10C9B5),
+                              Color(0xFF00695C), 
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                           borderRadius: BorderRadius.circular(48),
+                          boxShadow: [
+                            BoxShadow(
+                              color: teal.withValues(alpha: 0.25),
+                              blurRadius: 25,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.fact_check_rounded,
+                          size: 105,
+                          color: Colors.white,
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      // NAMA APLIKASI
+                      ShaderMask(
+                        shaderCallback: (bounds) {
+                          return const LinearGradient(
+                            colors: [
+                              Color(0xFF064E46),
+                              Color(0xFF00BFA5),
+                            ],
+                          ).createShader(bounds);
+                        },
+                        child: const Text(
+                          'SiLapor',
+                          style: TextStyle(
+                            fontSize: 58,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: -2,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // DESKRIPSI
+                      const Text(
+                        'Laporkan kerusakan fasilitas kampus '
+                        'dengan mudah, cepat, dan terpantau.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          height: 1.6,
+                          color: Color(0xFF475569),
+                        ),
+                      ),
+
+                      const SizedBox(height: 65),
+
+                      // TOMBOL MULAI
+                      SizedBox(
+                        width: double.infinity,
+                        height: 70,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const RoleSelectionScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: teal,
+                            foregroundColor: Colors.white,
+                            elevation: 4,
+                            shadowColor:
+                                teal.withValues(alpha: 0.25),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Expanded(
+                                child: Center(
+                                  child: Text(
+                                    'Mulai',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 34,
+                              ),
+                              const SizedBox(width: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 50),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
 
