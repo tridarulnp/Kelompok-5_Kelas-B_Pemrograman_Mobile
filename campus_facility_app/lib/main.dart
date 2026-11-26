@@ -118,12 +118,10 @@ class RoleSelectionScreen extends StatelessWidget {
                       color: teal,
                       iconBackground: const Color(0xFFCCFBF1),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Halaman login Mahasiswa akan dibuat selanjutnya.',
-                            ),
-                            behavior: SnackBarBehavior.floating,
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute( 
+                            builder: (context) => const StudentRegisterScreen(),
                           ),
                         );
                       },
@@ -307,6 +305,327 @@ class RoleSelectionScreen extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StudentRegisterScreen extends StatefulWidget {
+  const StudentRegisterScreen({super.key});
+
+  @override
+  State<StudentRegisterScreen> createState() =>
+      _StudentRegisterScreenState();
+}
+
+class _StudentRegisterScreenState extends State<StudentRegisterScreen> {
+  static const Color teal = Color(0xFF0F766E);
+  static const Color background = Color(0xFFF1F5F9);
+
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController namaController = TextEditingController();
+  final TextEditingController nimController = TextEditingController();
+  final TextEditingController prodiController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    namaController.dispose();
+    nimController.dispose();
+    prodiController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInput({
+    required String label,
+    required String hint,
+    required IconData icon,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    bool isPassword = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF334155),
+          ),
+        ),
+        const SizedBox(height: 9),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          obscureText: isPassword ? _obscurePassword : false,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return '$label tidak boleh kosong';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: Icon(icon, color: teal, size: 21),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: const Color(0xFF94A3B8),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  )
+                : null,
+            filled: true,
+            fillColor: const Color(0xFFF8FAFC),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 17,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: teal, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back_rounded,
+                    color: Color(0xFF0F172A),
+                  ),
+                  padding: EdgeInsets.zero,
+                  alignment: Alignment.centerLeft,
+                ),
+
+                const SizedBox(height: 20),
+
+                Center(
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF0F766E),
+                          Color(0xFF042F2E),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    child: const Icon(
+                      Icons.person_add_alt_1_rounded,
+                      color: Color(0xFF5EEAD4),
+                      size: 36,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                const Center(
+                  child: Text(
+                    'Buat Akun Mahasiswa',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 9),
+
+                const Center(
+                  child: Text(
+                    'Daftarkan diri Anda untuk mulai melaporkan\n'
+                    'kerusakan fasilitas kampus.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                _buildInput(
+                  label: 'Nama Lengkap',
+                  hint: 'Masukkan nama lengkap',
+                  icon: Icons.person_outline_rounded,
+                  controller: namaController,
+                ),
+
+                const SizedBox(height: 19),
+
+                _buildInput(
+                  label: 'Nomor Induk Mahasiswa (NIM)',
+                  hint: 'Masukkan NIM',
+                  icon: Icons.badge_outlined,
+                  controller: nimController,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 19),
+
+                _buildInput(
+                  label: 'Program Studi',
+                  hint: 'Masukkan program studi',
+                  icon: Icons.school_outlined,
+                  controller: prodiController,
+                ),
+
+                const SizedBox(height: 19),
+
+                _buildInput(
+                  label: 'Email',
+                  hint: 'contoh@email.com',
+                  icon: Icons.email_outlined,
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+
+                const SizedBox(height: 19),
+
+                _buildInput(
+                  label: 'Password',
+                  hint: 'Buat password',
+                  icon: Icons.lock_outline_rounded,
+                  controller: passwordController,
+                  isPassword: true,
+                ),
+
+                const SizedBox(height: 28),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Form registrasi berhasil divalidasi.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: teal,
+                      foregroundColor: Colors.white,
+                      elevation: 3,
+                      shadowColor: teal.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: const Text(
+                      'Daftar Sekarang',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                Center(
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      const Text(
+                        'Sudah punya akun? ',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Halaman login Mahasiswa akan dibuat selanjutnya.',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Masuk',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: teal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                const Center(
+                  child: Text(
+                    'LAPOR KAMPUS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
