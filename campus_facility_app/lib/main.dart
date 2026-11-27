@@ -2360,16 +2360,16 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Data login berhasil divalidasi.',
-                            ),
-                          ),
-                        );
-                      }
+                    onPressed: () { 
+                      if (_formKey.currentState!.validate()) { 
+                        Navigator.pushReplacement( 
+                          context, 
+                          MaterialPageRoute( 
+                            builder: (context) => 
+                            const StudentDashboardScreen(), 
+                          ), 
+                        ); 
+                      } 
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: teal,
@@ -2420,6 +2420,598 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class StudentDashboardScreen extends StatefulWidget {
+  const StudentDashboardScreen({super.key});
+
+  @override
+  State<StudentDashboardScreen> createState() =>
+      _StudentDashboardScreenState();
+}
+
+class _StudentDashboardScreenState
+    extends State<StudentDashboardScreen> {
+  int _currentIndex = 0;
+
+  static const Color teal = Color(0xFF0F766E);
+
+  final List<Map<String, dynamic>> reports = [
+    {
+      'title': 'Kursi kelas rusak',
+      'location': 'Gedung A, R.203',
+      'date': '12 Nov 2026, 10.24',
+      'status': 'Menunggu',
+      'color': Color(0xFFF59E0B),
+      'light': Color(0xFFFEF3C7),
+    },
+    {
+      'title': 'Lampu tidak menyala',
+      'location': 'Gedung B, R.105',
+      'date': '10 Nov 2026, 09.20',
+      'status': 'Diproses',
+      'color': Color(0xFF0284C7),
+      'light': Color(0xFFE0F2FE),
+    },
+    {
+      'title': 'AC tidak dingin',
+      'location': 'Gedung C, R.301',
+      'date': '8 Nov 2026, 08.10',
+      'status': 'Selesai',
+      'color': Color(0xFF059669),
+      'light': Color(0xFFD1FAE5),
+    },
+  ];
+
+  Widget _buildStatusCard({
+    required String number,
+    required String label,
+    required IconData icon,
+    required Color color,
+    required Color lightColor,
+  }) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(17),
+          border: Border.all(
+            color: color.withValues(alpha: 0.20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: lightColor,
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: 19,
+              ),
+            ),
+            const SizedBox(height: 13),
+            Text(
+              number,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF0F172A),
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReportCard(Map<String, dynamic> report) {
+    final Color color = report['color'];
+    final Color light = report['light'];
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 13),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(
+          color: const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.07),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Container(
+              width: 5,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(17),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(13),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        color: light,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.image_outlined,
+                        color: color,
+                        size: 29,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            report['title'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_rounded,
+                                size: 13,
+                                color: color,
+                              ),
+                              const SizedBox(width: 3),
+                              Expanded(
+                                child: Text(
+                                  report['location'],
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF64748B),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            report['date'],
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF94A3B8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: light,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        report['status'],
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF1F5F9),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(18, 20, 18, 25),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER
+              Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Halo, Tri Darul! 👋',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        'Laporkan kendala fasilitas kampus di sini.',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(
+                            alpha: 0.05,
+                          ),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: teal,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 22),
+
+              // KARTU TOTAL LAPORAN
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF0F766E),
+                      Color(0xFF0891B2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                    BoxShadow(
+                      color: teal.withValues(alpha: 0.25),
+                      blurRadius: 18,
+                      offset: const Offset(0, 7),
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      right: -15,
+                      top: -25,
+                      child: Icon(
+                        Icons.description_rounded,
+                        size: 115,
+                        color: Colors.white.withValues(
+                          alpha: 0.08,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.circle,
+                              color: Color(0xFF5EEAD4),
+                              size: 10,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'TOTAL LAPORAN',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(
+                                  alpha: 0.20,
+                                ),
+                                borderRadius:
+                                    BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'SEMUA',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 13),
+                        const Row(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '8',
+                              style: TextStyle(
+                                fontSize: 43,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 9),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 9),
+                              child: Text(
+                                'laporan telah dibuat',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(11),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(
+                              alpha: 0.13,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Laporan selesai',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                '2 dari 8 laporan',
+                                style: TextStyle(
+                                  color: Color(0xFFCCFBF1),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // STATUS LAPORAN
+              const Text(
+                'Status Laporan',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              Row(
+                children: [
+                  _buildStatusCard(
+                    number: '3',
+                    label: 'Menunggu',
+                    icon: Icons.hourglass_top_rounded,
+                    color: const Color(0xFFD97706),
+                    lightColor: const Color(0xFFFEF3C7),
+                  ),
+                  _buildStatusCard(
+                    number: '3',
+                    label: 'Diproses',
+                    icon: Icons.build_circle_rounded,
+                    color: const Color(0xFF0284C7),
+                    lightColor: const Color(0xFFE0F2FE),
+                  ),
+                  _buildStatusCard(
+                    number: '2',
+                    label: 'Selesai',
+                    icon: Icons.check_circle_rounded,
+                    color: const Color(0xFF059669),
+                    lightColor: const Color(0xFFD1FAE5),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 22),
+
+              // TOMBOL BUAT LAPORAN
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Halaman Buat Laporan akan dibuat berikutnya.',
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add_rounded),
+                  label: const Text(
+                    'Buat Laporan',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: teal,
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: teal.withValues(alpha: 0.25),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // LAPORAN TERBARU
+              Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Laporan Terbaru',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() => _currentIndex = 1);
+                    },
+                    child: const Text(
+                      'Lihat Semua →',
+                      style: TextStyle(
+                        color: teal,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 7),
+
+              ...reports.map(_buildReportCard),
+            ],
+          ),
+        ),
+      ),
+
+      // NAVIGASI BAWAH
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+        },
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: teal,
+        unselectedItemColor: const Color(0xFF94A3B8),
+        backgroundColor: Colors.white,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 11,
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description_outlined),
+            label: 'Laporan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_rounded),
+            label: 'Profil',
+          ),
+        ],
       ),
     );
   }
