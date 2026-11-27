@@ -696,17 +696,18 @@ class _StudentRegisterScreenState extends State<StudentRegisterScreen> {
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Form registrasi berhasil divalidasi.',
-                            ),
-                          ),
+                    onPressed: () { 
+                      if (_formKey.currentState!.validate()) { 
+                        Navigator.pushReplacement( 
+                          context,
+                          MaterialPageRoute( 
+                            builder: (context) => 
+                                const StudentDashboardScreen(), 
+                          ), 
                         );
                       }
                     },
+          
                     style: ElevatedButton.styleFrom(
                       backgroundColor: teal,
                       foregroundColor: Colors.white,
