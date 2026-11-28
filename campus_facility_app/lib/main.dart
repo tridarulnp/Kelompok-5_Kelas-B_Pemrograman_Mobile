@@ -477,11 +477,11 @@ class _StudentRegisterScreenState extends State<StudentRegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController namaController = TextEditingController();
-  final TextEditingController nimController = TextEditingController();
-  final TextEditingController prodiController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController namaController = TextEditingController(text: "Tri Darul");
+  final TextEditingController nimController = TextEditingController(text: "220101001");
+  final TextEditingController prodiController = TextEditingController(text: "Teknik Informatika");
+  final TextEditingController emailController = TextEditingController(text: "tridarul@kampus.ac.id");
+  final TextEditingController passwordController = TextEditingController(text: "12345678");
 
   bool _obscurePassword = true;
 
@@ -697,15 +697,13 @@ class _StudentRegisterScreenState extends State<StudentRegisterScreen> {
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () { 
-                      if (_formKey.currentState!.validate()) { 
-                        Navigator.pushReplacement( 
-                          context,
-                          MaterialPageRoute( 
-                            builder: (context) => 
-                                const StudentDashboardScreen(), 
-                          ), 
-                        );
-                      }
+                      Navigator.pushReplacement( 
+                        context,
+                        MaterialPageRoute( 
+                          builder: (context) => 
+                              const AdminDashboardScreen(isStudent: true), 
+                        ), 
+                      );
                     },
           
                     style: ElevatedButton.styleFrom(
@@ -969,7 +967,8 @@ class MockReportRepository implements ReportRepository {
 // ==========================================
 
 class AdminDashboardScreen extends StatefulWidget {
-  const AdminDashboardScreen({super.key});
+  final bool isStudent;
+  const AdminDashboardScreen({super.key, this.isStudent = false});
 
   @override
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
@@ -1027,155 +1026,527 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9), // Soft slate backdrop
-      body: SafeArea(
-        bottom: false,
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: Color(0xFF0F766E),
-                ),
-              )
-            : RefreshIndicator(
-                onRefresh: _loadData,
-                color: const Color(0xFF0F766E),
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  slivers: [
-                    // Top App Bar
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
-                        child: _buildHeaderBar(),
-                      ),
-                    ),
-
-                    // Rich Teal-Emerald Hero Card
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _buildVibrantHeroCard(),
-                      ),
-                    ),
-
-                    const SliverToBoxAdapter(child: SizedBox(height: 18)),
-
-                    // Vibrant 2x2 Filter Grid with Strong Colors
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _buildVibrantStatusGrid(),
-                      ),
-                    ),
-
-                    const SliverToBoxAdapter(child: SizedBox(height: 22)),
-
-                    // Section Heading with active filter indicator
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  _filterTitleText,
-                                  style: const TextStyle(
-                                    fontSize: 16.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF0F172A),
-                                    letterSpacing: -0.3,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE2E8F0),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    '${_filteredReports.length}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF334155),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (_selectedStatusFilter != null)
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() => _selectedStatusFilter = null);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: const Color(0xFFCBD5E1)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.04),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Tampilkan Semua',
-                                        style: TextStyle(
-                                          fontSize: 11.5,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xFF0F766E),
-                                        ),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Icon(Icons.refresh_rounded, size: 14, color: Color(0xFF0F766E)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
-
-                    // Reports List
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-                      sliver: _filteredReports.isEmpty
-                          ? SliverToBoxAdapter(child: _buildEmptyState())
-                          : SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final report = _filteredReports[index];
-                                  return _buildReportCard(report);
-                                },
-                                childCount: _filteredReports.length,
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-      ),
+      floatingActionButton: widget.isStudent && _currentNavIndex == 0
+          ? FloatingActionButton.extended(
+              onPressed: _showCreateReportDialog,
+              backgroundColor: const Color(0xFF0F766E),
+              foregroundColor: Colors.white,
+              elevation: 4,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Buat Laporan', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+            )
+          : null,
+      body: _buildBodyForCurrentTab(),
       bottomNavigationBar: _buildPremiumBottomNav(),
     );
   }
 
+  
+  void _showCreateReportDialog() {
+    final titleCtrl = TextEditingController();
+    final locCtrl = TextEditingController();
+    final descCtrl = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: EdgeInsets.only(
+          left: 20, right: 20, top: 20,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40, height: 4,
+                  decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(2)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text('Buat Laporan Kerusakan Baru', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+              const SizedBox(height: 6),
+              const Text('Sampaikan kendala fasilitas kampus dengan jelas.', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+              const SizedBox(height: 16),
+              TextField(
+                controller: titleCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Judul Kerusakan',
+                  hintText: 'Contoh: Lampu Ruang Kelas Mati',
+                  prefixIcon: const Icon(Icons.title_rounded, color: Color(0xFF0F766E)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: locCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Lokasi Fasilitas',
+                  hintText: 'Contoh: Gedung A, Lantai 2, R.201',
+                  prefixIcon: const Icon(Icons.location_on_rounded, color: Color(0xFF0F766E)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descCtrl,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  labelText: 'Deskripsi Tambahan',
+                  hintText: 'Tulis detail kendala jika ada...',
+                  prefixIcon: const Icon(Icons.notes_rounded, color: Color(0xFF0F766E)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final newTitle = titleCtrl.text.trim().isEmpty ? 'Laporan Fasilitas Kampus' : titleCtrl.text.trim();
+                    final newLoc = locCtrl.text.trim().isEmpty ? 'Gedung Perkuliahan' : locCtrl.text.trim();
+                    setState(() {
+                      _reports.insert(0, FacilityReport(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        code: 'SAR-${2042 + _reports.length}',
+                        title: newTitle,
+                        location: newLoc,
+                        category: 'Fasilitas Umum',
+                        timeAgo: 'Baru saja',
+                        status: ReportStatus.pending,
+                        imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=300&q=80',
+                        reporterName: widget.isStudent ? 'Tri Darul • Mahasiswa' : 'Staff Sarpras',
+                        description: descCtrl.text.trim().isEmpty ? 'Laporan baru dibuat dari aplikasi.' : descCtrl.text.trim(),
+                      ));
+                    });
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Laporan Anda berhasil dikirim! Menunggu tindak lanjut.'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Color(0xFF0F766E),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F766E),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Kirim Laporan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBodyForCurrentTab() {
+    switch (_currentNavIndex) {
+      case 0:
+        return _buildDashboardTab();
+      case 1:
+        return _buildLaporanTab();
+      case 2:
+        return _buildAnalitikTab();
+      case 3:
+        return _buildPengaturanTab();
+      default:
+        return _buildDashboardTab();
+    }
+  }
+
+  Widget _buildLaporanTab() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderBar(),
+            const SizedBox(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.isStudent ? 'Daftar Laporanku' : 'Semua Tiket Laporan',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                ),
+                if (widget.isStudent)
+                  IconButton(
+                    onPressed: _showCreateReportDialog,
+                    icon: const Icon(Icons.add_circle_rounded, color: Color(0xFF0F766E), size: 28),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: const TextField(
+                decoration: InputDecoration(
+                  icon: Icon(Icons.search_rounded, color: Color(0xFF94A3B8)),
+                  border: InputBorder.none,
+                  hintText: 'Cari berdasarkan judul, kode tiket, atau lokasi...',
+                  hintStyle: TextStyle(fontSize: 12.5, color: Color(0xFF94A3B8)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 20),
+                physics: const BouncingScrollPhysics(),
+                itemCount: _reports.length,
+                itemBuilder: (context, index) {
+                  return _buildReportCard(_reports[index]);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalitikTab() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderBar(),
+            const SizedBox(height: 20),
+            Text(
+              widget.isStudent ? 'Statistik Aktivitas Mahasiswa' : 'Statistik & Analisis Sarpras',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Performa dan tindak lanjut penanganan sarana prasarana.',
+              style: TextStyle(fontSize: 12.5, color: Color(0xFF64748B)),
+            ),
+            const SizedBox(height: 18),
+            _buildVibrantHeroCard(),
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 3)),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Rata-rata Waktu Respons', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildMetricCol('Kecepatan Respons', '< 2 Jam', const Color(0xFF0F766E)),
+                      _buildMetricCol('Penyelesaian', '1.4 Hari', const Color(0xFF0284C7)),
+                      _buildMetricCol('Kepuasan', '98.2%', const Color(0xFF10B981)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Distribusi Kategori Kerusakan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                  const SizedBox(height: 14),
+                  _buildCategoryProgress('Elektrikal & HVAC (AC, Kipas)', 0.42, const Color(0xFF0284C7)),
+                  const SizedBox(height: 10),
+                  _buildCategoryProgress('Mebel & Interior (Meja, Kursi)', 0.28, const Color(0xFFF59E0B)),
+                  const SizedBox(height: 10),
+                  _buildCategoryProgress('Multimedia & Proyektor', 0.18, const Color(0xFF10B981)),
+                  const SizedBox(height: 10),
+                  _buildCategoryProgress('Plumbing & Sanitasi', 0.12, const Color(0xFFEC4899)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMetricCol(String title, String val, Color color) {
+    return Column(
+      children: [
+        Text(val, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: color)),
+        const SizedBox(height: 4),
+        Text(title, style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.w500)),
+      ],
+    );
+  }
+
+  Widget _buildCategoryProgress(String name, double pct, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(name, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155))),
+            Text('${(pct * 100).toInt()}%', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: color)),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: LinearProgressIndicator(value: pct, minHeight: 7, backgroundColor: const Color(0xFFF1F5F9), color: color),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPengaturanTab() {
+    final isStudent = widget.isStudent;
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderBar(),
+            const SizedBox(height: 20),
+            Text(
+              isStudent ? 'Profil & Akun Mahasiswa' : 'Pengaturan & Profil Petugas',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            ),
+            const SizedBox(height: 6),
+            const Text('Kelola preferensi akun, notifikasi, dan keamanan.', style: TextStyle(fontSize: 12.5, color: Color(0xFF64748B))),
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: isStudent ? const Color(0xFFCCFBF1) : const Color(0xFFE0F2FE),
+                    child: Icon(isStudent ? Icons.person_rounded : Icons.admin_panel_settings_rounded, size: 30, color: const Color(0xFF0F766E)),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(isStudent ? 'Tri Darul N.P.' : 'Administrator Sarpras', style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                        const SizedBox(height: 2),
+                        Text(isStudent ? 'tridarul@kampus.ac.id' : 'admin.sarpras@kampus.ac.id', style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(6)),
+                          child: Text(isStudent ? 'NIM: 220101001 • Aktif' : 'ID Petugas: ADM-01', style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Color(0xFF334155))),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            _buildSettingTile(Icons.security_rounded, 'Keamanan & Kata Sandi', 'Ubah kata sandi dan autentikasi'),
+            _buildSettingTile(Icons.notifications_active_rounded, 'Notifikasi Laporan', 'Pemberitahuan pembaruan tiket status'),
+            _buildSettingTile(Icons.help_outline_rounded, 'Bantuan & FAQ Sarpras', 'Panduan tata cara pelaporan fasilitas'),
+            _buildSettingTile(Icons.info_outline_rounded, 'Tentang Aplikasi SiLapor', 'Versi 1.0.0 (Production Release)'),
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
+                    (route) => false,
+                  );
+                },
+                icon: const Icon(Icons.logout_rounded, color: Color(0xFFDC2626), size: 18),
+                label: const Text('Keluar / Ganti Akun', style: TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.w700, fontSize: 13.5)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFFFCA5A5)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  backgroundColor: const Color(0xFFFEF2F2),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingTile(IconData icon, String title, String subtitle) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(10)),
+          child: Icon(icon, color: const Color(0xFF0F766E), size: 20),
+        ),
+        title: Text(title, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 11.5, color: Color(0xFF64748B))),
+        trailing: const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8), size: 20),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Menu "$title" aktif & siap digunakan.'), behavior: SnackBarBehavior.floating),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDashboardTab() {
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(strokeWidth: 3, color: Color(0xFF0F766E)),
+          )
+        : RefreshIndicator(
+            onRefresh: _loadData,
+            color: const Color(0xFF0F766E),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
+                    child: _buildHeaderBar(),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildVibrantHeroCard(),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 18)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildVibrantStatusGrid(),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 22)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              _filterTitleText,
+                              style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.3),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(10)),
+                              child: Text(
+                                '${_filteredReports.length}',
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF334155)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_selectedStatusFilter != null)
+                          GestureDetector(
+                            onTap: () {
+                              setState(() => _selectedStatusFilter = null);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFCBD5E1)),
+                                boxShadow: [
+                                  BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 1)),
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Tampilkan Semua', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Color(0xFF0F766E))),
+                                  SizedBox(width: 4),
+                                  Icon(Icons.refresh_rounded, size: 14, color: Color(0xFF0F766E)),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                  sliver: _filteredReports.isEmpty
+                      ? SliverToBoxAdapter(child: _buildEmptyState())
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final report = _filteredReports[index];
+                              return _buildReportCard(report);
+                            },
+                            childCount: _filteredReports.length,
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          );
+  }
+
   Widget _buildHeaderBar() {
+    final isStudent = widget.isStudent;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1212,9 +1583,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               children: [
                 Row(
                   children: [
-                    const Text(
-                      'Sarpras Kampus',
-                      style: TextStyle(
+                    Text(
+                      isStudent ? 'Tri Darul N.P.' : 'Sarpras Kampus',
+                      style: const TextStyle(
                         fontSize: 18.5,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF0F172A),
@@ -1225,12 +1596,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F766E),
+                        color: isStudent ? const Color(0xFF0284C7) : const Color(0xFF0F766E),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Text(
-                        'ADMIN',
-                        style: TextStyle(
+                      child: Text(
+                        isStudent ? 'MHS' : 'ADMIN',
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
@@ -1241,9 +1612,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   ],
                 ),
                 const SizedBox(height: 2),
-                const Text(
-                  'Monitoring fasilitas real-time',
-                  style: TextStyle(
+                Text(
+                  isStudent ? 'NIM 220101001 • Teknik Informatika' : 'Monitoring fasilitas real-time',
+                  style: const TextStyle(
                     fontSize: 12.5,
                     color: Color(0xFF64748B),
                     fontWeight: FontWeight.w500,
@@ -2210,8 +2581,8 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController namaController = TextEditingController();
-  final TextEditingController nimController = TextEditingController();
+  final TextEditingController namaController = TextEditingController(text: "Tri Darul");
+  final TextEditingController nimController = TextEditingController(text: "220101001");
 
   @override
   void dispose() {
@@ -2362,15 +2733,13 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () { 
-                      if (_formKey.currentState!.validate()) { 
-                        Navigator.pushReplacement( 
-                          context, 
-                          MaterialPageRoute( 
-                            builder: (context) => 
-                            const StudentDashboardScreen(), 
-                          ), 
-                        ); 
-                      } 
+                      Navigator.pushReplacement( 
+                        context, 
+                        MaterialPageRoute( 
+                          builder: (context) => 
+                          const AdminDashboardScreen(isStudent: true), 
+                        ), 
+                      ); 
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: teal,
